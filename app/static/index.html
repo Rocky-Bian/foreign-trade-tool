@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>外贸客户发现工具</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div>
+        <h1>外贸客户发现工具</h1>
+        <p class="subtitle">找客户 · 人工发邮件 · 支持卤素水分仪 & 在线水分仪</p>
+      </div>
+      <div class="badge" id="apiStatus">检测配置中…</div>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel">
+        <h2>搜索设置</h2>
+
+        <label class="field">
+          <span>产品</span>
+          <select id="productSelect"></select>
+        </label>
+
+        <div class="product-desc" id="productDesc"></div>
+
+        <label class="field">
+          <span>目标市场</span>
+          <div class="chip-grid" id="countryGrid"></div>
+          <button type="button" class="link-btn" id="selectAllCountries">全选</button>
+        </label>
+
+        <label class="field">
+          <span>客户类型</span>
+          <div class="chip-grid" id="customerTypeGrid"></div>
+        </label>
+
+        <label class="field">
+          <span>搜索引擎</span>
+          <select id="searchProvider">
+            <option value="auto">自动（DuckDuckGo 免费）</option>
+            <option value="duckduckgo">DuckDuckGo（免费，推荐）</option>
+            <option value="google_cse">Google（仅特定网站，新账号无法全网）</option>
+          </select>
+        </label>
+
+        <label class="field checkbox-field">
+          <input type="checkbox" id="fastMode" checked />
+          <span>快速模式（并行搜索 + 精简爬取，推荐开启）</span>
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>每条搜索词结果数</span>
+            <input type="number" id="maxResults" min="3" max="20" value="8" />
+          </label>
+          <label class="field">
+            <span>搜索词数量</span>
+            <input type="number" id="maxQueries" min="4" max="30" value="12" />
+          </label>
+        </div>
+
+        <button class="primary-btn" id="startBtn">开始找客户</button>
+
+        <details class="google-panel">
+          <summary>Google 搜索配置（新账号已无法全网搜索）</summary>
+          <p class="hint warn-text">⚠️ 2026年1月起，Google 新创建的搜索引擎<strong>不再支持「搜索整个网络」</strong>，该开关会变灰无法开启。找全球客户请直接用下方的 <strong>DuckDuckGo（免费）</strong>。</p>
+          <p class="hint">仅当你需要搜索特定几个网站时，Google 配置才有意义（最多 50 个域名）。</p>
+          <label class="field">
+            <span>API Key</span>
+            <input type="password" id="googleApiKey" placeholder="AIza..." autocomplete="off" />
+          </label>
+          <label class="field">
+            <span>搜索引擎 ID (cx)</span>
+            <input type="text" id="googleCseId" placeholder="a1b2c3d4e5..." autocomplete="off" />
+          </label>
+          <button type="button" class="secondary-btn" id="saveGoogleBtn">保存 Google 配置</button>
+          <p class="hint" id="googleSaveHint"></p>
+        </details>
+
+        <div class="tips">
+          <h3>使用说明</h3>
+          <ul>
+            <li>推荐用 <strong>DuckDuckGo</strong> 搜全球客户（免费、无需 Google 配置）</li>
+            <li>开启<strong>快速模式</strong>可显著提速（约 3–5 倍）</li>
+            <li>配置 <code>OPENAI_API_KEY</code> 后关闭快速模式可用 AI 精细打分</li>
+            <li>结果导出 Excel，邮箱列可直接用于人工发开发信</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="panel result-panel">
+        <div class="result-header">
+          <h2>搜索结果</h2>
+          <div class="result-actions">
+            <button class="secondary-btn hidden" id="exportBtn">导出 Excel</button>
+          </div>
+        </div>
+
+        <div class="progress-box hidden" id="progressBox">
+          <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+          <p id="progressText">准备中…</p>
+        </div>
+
+        <div class="empty-state" id="emptyState">
+          <p>选择产品和市场，点击「开始找客户」</p>
+        </div>
+
+        <div class="table-wrap hidden" id="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>评分</th>
+                <th>公司</th>
+                <th>网站</th>
+                <th>邮箱</th>
+                <th>类型</th>
+                <th>理由</th>
+              </tr>
+            </thead>
+            <tbody id="resultsBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
